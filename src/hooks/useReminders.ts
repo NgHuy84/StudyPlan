@@ -6,7 +6,7 @@ import { timeOf } from '../data/date';
 export function notify(title: string, body: string) {
   try {
     if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification(title, { body, icon: '/favicon.svg', tag: title });
+      new Notification(title, { body, icon: './favicon.svg', tag: title });
     }
   } catch {
     /* một số trình duyệt chặn Notification ngoài service worker */

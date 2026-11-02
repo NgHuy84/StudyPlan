@@ -1,16 +1,17 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+// HashRouter (đường dẫn dạng /#/calendar) để GitHub Pages không báo 404 khi tải lại trang
+import { HashRouter } from 'react-router-dom';
 import App from './App';
 import { StoreProvider } from './data/store';
 import './styles/global.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <HashRouter>
       <StoreProvider>
         <App />
       </StoreProvider>
-    </BrowserRouter>
+    </HashRouter>
   </StrictMode>,
 );

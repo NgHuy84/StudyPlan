@@ -1,7 +1,20 @@
-<<<<<<< HEAD
 # StudyPlan
 
 Ứng dụng quản lý thời gian và công việc cho sinh viên, viết bằng **React + Vite + TypeScript**. Giao diện bám theo thiết kế Figma *"Wireframe – Quản lý thời gian sinh viên"*, trang **🎨 UI Design – StudyPlan** (nhóm 11).
+
+## Dùng thử online
+
+🔗 **https://nghuy84.github.io/StudyPlan/**
+
+- Tài khoản demo có sẵn dữ liệu mẫu: `huy.nguyen@iuh.edu.vn` (mật khẩu bất kỳ).
+- Đăng nhập bằng email khác sẽ bắt đầu với dữ liệu trống.
+
+Bản online nằm ở thư mục `docs/` và được GitHub Pages phục vụ (Settings → Pages → Deploy from a branch → `main` / `docs`).
+Muốn cập nhật bản online sau khi sửa code, chạy lệnh dưới đây rồi commit và push:
+
+```bash
+npx vite build --outDir docs --emptyOutDir
+```
 
 ## Chạy dự án
 
@@ -61,6 +74,3 @@ src/
 - **Font:** Be Vietnam Pro (400/500/600/700), thang chữ 32/26/20/17/16/14/12.
 - **Bo góc:** 8 (checkbox) · 12 (nút) · 16 (thẻ) · 24 (sheet) · 999 (badge).
 - **Khoảng cách:** lưới 4px; vùng chạm tối thiểu 44px.
-=======
-# StudyPlan
->>>>>>> b917702f5014d510fd7abecf8cfb108f267db5ba
