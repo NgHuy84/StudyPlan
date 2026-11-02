@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # StudyPlan
 
 Ứng dụng quản lý thời gian và công việc cho sinh viên, viết bằng **React + Vite + TypeScript**. Giao diện bám theo thiết kế Figma *"Wireframe – Quản lý thời gian sinh viên"*, trang **🎨 UI Design – StudyPlan** (nhóm 11).
@@ -60,3 +61,6 @@ src/
 - **Font:** Be Vietnam Pro (400/500/600/700), thang chữ 32/26/20/17/16/14/12.
 - **Bo góc:** 8 (checkbox) · 12 (nút) · 16 (thẻ) · 24 (sheet) · 999 (badge).
 - **Khoảng cách:** lưới 4px; vùng chạm tối thiểu 44px.
+=======
+# StudyPlan
+>>>>>>> b917702f5014d510fd7abecf8cfb108f267db5ba

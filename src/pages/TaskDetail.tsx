@@ -12,6 +12,9 @@ export function TaskDetailPage() {
   const { tasks, subjects, toggleTask, toggleSubtask, updateTask, deleteTask, togglePinTask, showToast } = useStore();
   const task = tasks.find((t) => t.id === id);
   const [newSub, setNewSub] = useState('');
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   if (!task) {
     return (
@@ -47,14 +50,20 @@ export function TaskDetailPage() {
             showToast(task.pinned ? 'Đã bỏ ghim công việc' : 'Đã ghim công việc lên đầu 📌');
           }}
         />
+        {/* xoá 2 bước: bấm lần 1 để hỏi lại, bấm lần 2 trong 3 giây để xoá (không dùng confirm() của trình duyệt) */}
         <button
-          className="icon-btn"
-          aria-label="Xoá công việc"
+          className={`icon-btn ${confirmDelete ? 'danger-armed' : ''}`}
+          aria-label={confirmDelete ? 'Bấm lần nữa để xoá' : 'Xoá công việc'}
+          title={confirmDelete ? 'Bấm lần nữa để xoá' : 'Xoá công việc'}
           onClick={() => {
-            if (confirm('Xoá công việc này?')) {
+            if (confirmDelete) {
               deleteTask(task.id);
               showToast('Đã xoá công việc');
               nav('/');
+            } else {
+              setConfirmDelete(true);
+              showToast('Bấm biểu tượng thùng rác lần nữa để xoá');
+              window.setTimeout(() => setConfirmDelete(false), 3000);
             }
           }}
         >
@@ -70,7 +79,23 @@ export function TaskDetailPage() {
           {task.done && <span className="badge badge-low">Đã hoàn thành</span>}
           {task.pinned && <span className="badge badge-neutral"><Icon name="pin" size={12} /> Đã ghim</span>}
         </div>
-        <h1 className="t-h1" style={{ textDecoration: task.done ? 'line-through' : undefined }}>{task.title}</h1>
+        {editing ? (
+          <form
+            className="row"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (draft.trim()) updateTask(task.id, { title: draft.trim() });
+              setEditing(false);
+            }}
+          >
+            <input className="input t-h3" autoFocus value={draft} onChange={(e) => setDraft(e.target.value)} aria-label="Tên công việc"
+              onKeyDown={(e) => e.key === 'Escape' && setEditing(false)} />
+            <Button type="submit" small>Lưu</Button>
+            <Button type="button" variant="ghost" small onClick={() => setEditing(false)}>Huỷ</Button>
+          </form>
+        ) : (
+          <h1 className="t-h1" style={{ textDecoration: task.done ? 'line-through' : undefined }} onDoubleClick={() => { setDraft(task.title); setEditing(true); }}>{task.title}</h1>
+        )}
       </div>
 
       <div className="card stack" style={{ gap: 0, padding: 0 }}>
@@ -129,10 +154,7 @@ export function TaskDetailPage() {
       )}
 
       <div className="row">
-        <Button variant="ghost" icon="edit" className="grow" onClick={() => {
-          const t = prompt('Đổi tên công việc', task.title);
-          if (t?.trim()) updateTask(task.id, { title: t.trim() });
-        }}>Sửa</Button>
+        <Button variant="ghost" icon="edit" className="grow" onClick={() => { setDraft(task.title); setEditing(true); }}>Sửa tên</Button>
         <Button
           icon="check"
           className="grow"

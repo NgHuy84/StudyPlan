@@ -582,3 +582,5 @@ kbd {
   from { transform: scale(1.1) translateY(-3px) rotate(-5deg); }
   to { transform: scale(1.22) translateY(-6px) rotate(5deg); }
 }
+
+.icon-btn.danger-armed { background: var(--priority-high-bg); color: var(--priority-high); border-color: var(--priority-high); animation: pop .3s; }

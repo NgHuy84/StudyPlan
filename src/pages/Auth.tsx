@@ -4,6 +4,41 @@ import { useStore } from '../data/store';
 import { Icon } from '../components/Icon';
 import { Button, Field } from '../components/ui';
 
+const REMEMBER_KEY = 'studyplan.rememberEmail';
+const ACCOUNTS_KEY = 'studyplan.accounts';
+
+function readRemembered(): string {
+  try {
+    return localStorage.getItem(REMEMBER_KEY) ?? '';
+  } catch {
+    return '';
+  }
+}
+
+/** Lưu tên của tài khoản vừa đăng ký để lần sau đăng nhập hiện đúng tên */
+function saveAccount(email: string, name: string) {
+  try {
+    const all = JSON.parse(localStorage.getItem(ACCOUNTS_KEY) ?? '{}') as Record<string, string>;
+    all[email.toLowerCase()] = name;
+    localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(all));
+  } catch {
+    /* ignore */
+  }
+}
+
+/** Tên hiển thị: lấy từ tài khoản đã đăng ký, nếu không có thì suy ra từ email (vd: an.tran@… → "Tran An") */
+function nameFor(email: string): string {
+  try {
+    const all = JSON.parse(localStorage.getItem(ACCOUNTS_KEY) ?? '{}') as Record<string, string>;
+    if (all[email.toLowerCase()]) return all[email.toLowerCase()];
+  } catch {
+    /* ignore */
+  }
+  const local = email.split('@')[0].replace(/[._-]+/g, ' ').replace(/\d+/g, '').trim();
+  // email thường dạng ten.ho → đảo lại thành "Ho Ten" để lời chào gọi đúng tên
+  return local ? local.split(' ').reverse().map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : 'Sinh viên';
+}
+
 function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div className="auth">
@@ -45,10 +80,12 @@ function AuthLayout({ children }: { children: ReactNode }) {
 export function LoginPage() {
   const { login } = useStore();
   const nav = useNavigate();
-  const [email, setEmail] = useState('huy.nguyen@iuh.edu.vn');
+  // không điền sẵn email; chỉ nhớ email khi người dùng đã tick "Ghi nhớ đăng nhập"
+  const [email, setEmail] = useState(() => readRemembered());
   const [pw, setPw] = useState('');
-  const [remember, setRemember] = useState(true);
+  const [remember, setRemember] = useState(() => !!readRemembered());
   const [err, setErr] = useState<{ email?: string; pw?: string }>({});
+  const [info, setInfo] = useState('');
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
@@ -57,7 +94,13 @@ export function LoginPage() {
     if (pw.length < 1) next.pw = 'Vui lòng nhập mật khẩu';
     setErr(next);
     if (Object.keys(next).length) return;
-    login({ name: 'Nguyễn Quan Huy', email });
+    try {
+      if (remember) localStorage.setItem(REMEMBER_KEY, email.trim());
+      else localStorage.removeItem(REMEMBER_KEY);
+    } catch {
+      /* ignore */
+    }
+    login({ name: nameFor(email.trim()), email: email.trim() });
     nav('/');
   };
 
@@ -68,7 +111,7 @@ export function LoginPage() {
         <p className="muted" style={{ marginTop: 6 }}>Đăng nhập để xem lịch học, ca làm và deadline của bạn hôm nay.</p>
       </div>
       <form className="stack" onSubmit={submit} noValidate>
-        <Field id="email" label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} error={err.email} autoComplete="email" />
+        <Field id="email" label="Email" type="email" placeholder="ten.sinhvien@iuh.edu.vn" value={email} onChange={(e) => setEmail(e.target.value)} error={err.email} autoComplete="email" />
         <Field id="pw" label="Mật khẩu" type="password" placeholder="••••••••" value={pw} onChange={(e) => setPw(e.target.value)} error={err.pw} autoComplete="current-password" />
         <div className="row between">
           <label className="row" style={{ cursor: 'pointer', minHeight: 44 }}>
@@ -79,7 +122,8 @@ export function LoginPage() {
         </div>
         <Button type="submit" block>Đăng nhập</Button>
         <div className="divider">hoặc</div>
-        <Button type="button" variant="ghost" block icon="qr" onClick={() => alert('Tính năng quét mã QR thẻ sinh viên đang phát triển')}>
+        {info && <p className="field-hint" role="status" style={{ textAlign: 'center' }}>{info}</p>}
+        <Button type="button" variant="ghost" block icon="qr" onClick={() => setInfo('Tính năng quét mã QR thẻ sinh viên đang được phát triển.')}>
           Đăng nhập bằng mã QR thẻ sinh viên
         </Button>
       </form>
@@ -115,7 +159,8 @@ export function RegisterPage() {
     e.preventDefault();
     setTried(true);
     if (!valid) return;
-    login({ name: name.trim(), email });
+    saveAccount(email.trim(), name.trim());
+    login({ name: name.trim(), email: email.trim() });
     nav('/');
   };
 

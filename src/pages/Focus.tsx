@@ -217,8 +217,12 @@ export function FocusPage() {
 
           <Button variant="ghost" icon="bell" onClick={async () => {
             if (!('Notification' in window)) return showToast('Trình duyệt không hỗ trợ thông báo');
-            const p = await Notification.requestPermission();
-            showToast(p === 'granted' ? 'Đã bật thông báo trên máy 🔔' : 'Bạn chưa cho phép thông báo');
+            try {
+              const p = await Notification.requestPermission();
+              showToast(p === 'granted' ? 'Đã bật thông báo trên máy 🔔' : 'Bạn chưa cho phép thông báo');
+            } catch {
+              showToast('Trình duyệt đang chặn thông báo ở trang này');
+            }
           }}>
             Bật thông báo khi hết giờ
           </Button>
