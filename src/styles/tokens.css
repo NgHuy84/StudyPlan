@@ -1,0 +1,120 @@
+/* ================================================================
+   StudyPlan – Design tokens (đồng bộ với Style Guide trong Figma)
+   ================================================================ */
+:root {
+  /* Indigo – màu chính */
+  --indigo-50: #f2f3fd;
+  --indigo-100: #e3e6fb;
+  --indigo-200: #c7ccf6;
+  --indigo-400: #7c87e8;
+  --indigo-500: #4f5bd5; /* primary */
+  --indigo-600: #4049b8;
+  --indigo-700: #333894;
+
+  /* Trung tính */
+  --neutral-0: #ffffff;
+  --neutral-25: #f8f9fc;
+  --neutral-50: #f2f4f8;
+  --neutral-100: #e6e9f0;
+  --neutral-200: #d3d8e2;
+  --neutral-400: #98a1b3;
+  --neutral-500: #667085;
+  --neutral-600: #4c5466;
+  --neutral-900: #161a23;
+
+  /* Mức ưu tiên */
+  --priority-high: #e5484d;
+  --priority-high-bg: #fdecec;
+  --priority-medium: #f5a524;
+  --priority-medium-bg: #fef4e2;
+  --priority-low: #2fb36b;
+  --priority-low-bg: #e6f6ed;
+
+  /* Loại công việc */
+  --cat-study: #2e90fa;
+  --cat-study-bg: #e7f2fe;
+  --cat-work: #f5a524;
+  --cat-work-bg: #fef4e2;
+  --cat-group: #8b5cf6;
+  --cat-group-bg: #f1ebfe;
+  --cat-personal: #2fb36b;
+  --cat-personal-bg: #e6f6ed;
+
+  /* Ngữ nghĩa */
+  --bg: var(--neutral-25);
+  --surface: var(--neutral-0);
+  --text: var(--neutral-900);
+  --text-secondary: var(--neutral-500);
+  --border: var(--neutral-100);
+  --primary: var(--indigo-500);
+
+  /* Bo góc */
+  --radius-checkbox: 8px;
+  --radius-button: 12px;
+  --radius-card: 16px;
+  --radius-sheet: 24px;
+  --radius-full: 999px;
+
+  /* Khoảng cách – lưới 4px */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Typography – Be Vietnam Pro */
+  --font: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fs-display: 32px; --lh-display: 40px;
+  --fs-h1: 26px; --lh-h1: 34px;
+  --fs-h2: 20px; --lh-h2: 28px;
+  --fs-h3: 17px; --lh-h3: 24px;
+  --fs-body-lg: 16px; --lh-body-lg: 24px;
+  --fs-body: 14px; --lh-body: 20px;
+  --fs-caption: 12px; --lh-caption: 16px;
+
+  --shadow-card: 0 1px 2px rgba(22, 26, 35, 0.04), 0 2px 8px rgba(22, 26, 35, 0.04);
+  --shadow-float: 0 8px 24px rgba(79, 91, 213, 0.35);
+  --touch: 44px;
+}
+
+/* ================================================================
+   Giao diện tối – cùng tên biến, chỉ đổi giá trị
+   ================================================================ */
+:root { color-scheme: light; --tabbar-bg: rgba(255, 255, 255, 0.96); --toast-bg: #161a23; --toast-text: #ffffff; }
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --indigo-50: #232848;
+  --indigo-100: #2d335e;
+  --indigo-200: #3b427e;
+  --indigo-400: #7c87e8;
+  --indigo-500: #6e79ea; /* sáng hơn một chút để đủ tương phản trên nền tối */
+  --indigo-600: #8790f0;
+  --indigo-700: #3a3f9e;
+
+  --neutral-0: #1a1e29;   /* bề mặt thẻ */
+  --neutral-25: #11141b;  /* nền màn hình */
+  --neutral-50: #222735;
+  --neutral-100: #2c3243; /* viền */
+  --neutral-200: #3b4257;
+  --neutral-400: #7f889c;
+  --neutral-500: #a0a8b9;
+  --neutral-600: #c0c6d2;
+  --neutral-900: #eef0f6; /* chữ chính */
+
+  --priority-high-bg: #3a1e24;
+  --priority-medium-bg: #3a2d16;
+  --priority-low-bg: #16302a;
+  --cat-study-bg: #152a44;
+  --cat-work-bg: #3a2d16;
+  --cat-group-bg: #2a2148;
+  --cat-personal-bg: #16302a;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-float: 0 8px 24px rgba(110, 121, 234, 0.45);
+  --tabbar-bg: rgba(26, 30, 41, 0.94);
+  --toast-bg: #eef0f6;
+  --toast-text: #11141b;
+}
