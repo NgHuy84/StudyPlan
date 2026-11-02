@@ -11,7 +11,8 @@ import { StreakCard } from '../components/StreakCard';
 
 /* 01 · Hôm nay (mobile)  ·  07 · Tổng quan (website) */
 export function TodayPage() {
-  const { user, tasks, events, subjects, setSearchOpen } = useStore();
+  const { user, tasks, events, subjects, setSearchOpen, bestStreak, setQuickAddOpen } = useStore();
+  const isNew = tasks.length === 0 && subjects.length === 0 && events.length === 0;
   const stats = useStats();
   const today = new Date();
   const first = user?.name.split(' ').pop() ?? 'bạn';
@@ -36,7 +37,11 @@ export function TodayPage() {
         <Link to="/calendar">Xem lịch</Link>
       </div>
       <div className="stack">
-        {todayEvents.length === 0 && <div className="card empty">Hôm nay không có lịch học 🎉</div>}
+        {todayEvents.length === 0 && (
+          <div className="card empty">
+            {events.length === 0 ? <>Chưa có lịch học. <Link to="/calendar">Thêm lịch</Link></> : 'Hôm nay không có lịch học 🎉'}
+          </div>
+        )}
         {todayEvents.map((e) => (
           <div className="sched" key={e.id} style={cssVars({ '--c': CATEGORY_COLOR[e.category].c, '--cbg': CATEGORY_COLOR[e.category].bg })}>
             <div className="time">{e.start}<br />{e.end}</div>
@@ -65,6 +70,36 @@ export function TodayPage() {
         </div>
       </div>
 
+      {/* Người dùng mới – chưa có dữ liệu: hướng dẫn 3 bước bắt đầu */}
+      {isNew && (
+        <section className="card onboard">
+          <div>
+            <div className="t-h2" style={{ fontWeight: 700 }}>Chào mừng đến với StudyPlan 👋</div>
+            <p className="muted" style={{ marginTop: 4 }}>Tài khoản của bạn đang trống. Bắt đầu với 3 bước sau:</p>
+          </div>
+          <div className="onboard-steps">
+            <Link to="/subjects" className="onboard-step">
+              <span className="num">1</span>
+              <span className="subject-icon" style={{ color: 'var(--cat-study)', background: 'var(--cat-study-bg)' }}><Icon name="book" /></span>
+              <b>Thêm môn học</b>
+              <span className="t-caption muted">Các môn của học kỳ này</span>
+            </Link>
+            <Link to="/calendar" className="onboard-step">
+              <span className="num">2</span>
+              <span className="subject-icon" style={{ color: 'var(--cat-group)', background: 'var(--cat-group-bg)' }}><Icon name="calendar" /></span>
+              <b>Thêm lịch học</b>
+              <span className="t-caption muted">Lịch học, ca làm hằng tuần</span>
+            </Link>
+            <button className="onboard-step" onClick={() => setQuickAddOpen(true)}>
+              <span className="num">3</span>
+              <span className="subject-icon" style={{ color: 'var(--priority-high)', background: 'var(--priority-high-bg)' }}><Icon name="plus" /></span>
+              <b>Thêm việc đầu tiên</b>
+              <span className="t-caption muted">Bài tập, deadline sắp tới</span>
+            </button>
+          </div>
+        </section>
+      )}
+
       {/* Thẻ tiến độ – mobile */}
       <div className="hero mobile-only">
         <div className="eyebrow">TIẾN ĐỘ HÔM NAY</div>
@@ -85,7 +120,7 @@ export function TodayPage() {
         <StatCard icon="target" tone={{ c: 'var(--primary)', bg: 'var(--indigo-50)' }} label="Việc hôm nay" value={String(todays.length)} sub={`${doneToday} đã hoàn thành`} />
         <StatCard icon="check" tone={{ c: 'var(--priority-low)', bg: 'var(--priority-low-bg)' }} label="Hoàn thành tuần này" value={String(stats.weekDone)} sub={`${stats.onTimePct}% đúng hạn`} />
         <StatCard icon="hourglass" tone={{ c: 'var(--priority-high)', bg: 'var(--priority-high-bg)' }} label="Sắp đến hạn" value={String(stats.dueSoon)} sub="Trong 48 giờ tới" />
-        <StreakCard streak={stats.streak} />
+        <StreakCard streak={stats.streak} record={bestStreak} />
       </div>
 
       <div className="web-grid stack-lg">
@@ -107,7 +142,11 @@ export function TodayPage() {
             <span className="muted">{priorities.length} việc</span>
           </div>
           <div className="stack">
-            {priorities.length === 0 && <div className="card empty">Không còn việc gấp. Nghỉ ngơi chút nhé!</div>}
+            {priorities.length === 0 && (
+              <div className="card empty">
+                {tasks.length === 0 ? 'Chưa có công việc nào — bấm nút “+” để thêm việc đầu tiên.' : 'Không còn việc gấp. Nghỉ ngơi chút nhé!'}
+              </div>
+            )}
             {priorities.map((t) => <TaskCard key={t.id} task={t} />)}
             {todays.filter((t) => t.done).map((t) => <TaskCard key={t.id} task={t} />)}
           </div>
@@ -124,7 +163,7 @@ export function TodayPage() {
             <span className="focus-cta-go"><Icon name="play" size={16} /></span>
           </Link>
           {schedule}
-          <section className="web-only">
+          <section className="web-only" hidden={upcomingSubjects.length === 0}>
             <div className="section-head"><h2 className="t-h2">Môn học sắp đến hạn</h2></div>
             <div className="stack">
               {upcomingSubjects.map((s) => (

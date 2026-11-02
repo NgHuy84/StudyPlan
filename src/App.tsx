@@ -12,6 +12,7 @@ import { QuickAddSheet } from './pages/QuickAdd';
 import { FocusPage } from './pages/Focus';
 import { CommandPalette } from './components/CommandPalette';
 import { useReminders } from './hooks/useReminders';
+import { useStreakRecord } from './pages/useStats';
 
 /** Thứ tự các tab – dùng để xác định hướng trượt khi chuyển trang */
 const ORDER = ['/', '/calendar', '/subjects', '/progress', '/focus'];
@@ -39,6 +40,7 @@ function Shell() {
   const { pathname } = useLocation();
   const transition = useTransitionName(pathname);
   useReminders();
+  useStreakRecord();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { ButtonHTMLAttributes, CSSProperties, InputHTMLAttributes, ReactNode } from 'react';
 import { Icon, type IconName } from './Icon';
 import { CATEGORY_LABEL, PRIORITY_LABEL, type Category, type Priority } from '../data/types';
@@ -170,6 +171,46 @@ export function PinButton({ pinned, onToggle, name, small }: { pinned?: boolean;
       }}
     >
       <Icon name="pin" size={small ? 16 : 18} />
+    </button>
+  );
+}
+
+/* ---------------- Sheet (hộp thoại trượt từ dưới lên / giữa màn hình trên web) ---------------- */
+export function Sheet({ open, title, onClose, children }: { open: boolean; title: string; onClose: () => void; children: ReactNode }) {
+  if (!open) return null;
+  return (
+    <div className="overlay" onClick={onClose} onKeyDown={(e) => e.key === 'Escape' && onClose()}>
+      <div className="sheet stack-lg" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={title}>
+        <div className="grabber" />
+        <div className="row between">
+          <h2 className="t-h2" style={{ fontWeight: 700 }}>{title}</h2>
+          <button type="button" className="icon-btn" aria-label="Đóng" onClick={onClose}><Icon name="x" /></button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/** Nút xoá 2 bước: bấm lần 1 để hỏi lại, lần 2 (trong 3 giây) mới xoá */
+export function DeleteButton({ onDelete, label, small }: { onDelete: () => void; label: string; small?: boolean }) {
+  const [armed, setArmed] = useState(false);
+  return (
+    <button
+      type="button"
+      className={`pin-btn del-btn ${armed ? 'armed' : ''} ${small ? 'small' : ''}`}
+      aria-label={armed ? `Bấm lần nữa để xoá ${label}` : `Xoá ${label}`}
+      title={armed ? 'Bấm lần nữa để xoá' : 'Xoá'}
+      onClick={(e) => {
+        e.stopPropagation();
+        if (armed) onDelete();
+        else {
+          setArmed(true);
+          window.setTimeout(() => setArmed(false), 3000);
+        }
+      }}
+    >
+      <Icon name={armed ? 'check' : 'trash'} size={small ? 15 : 17} />
     </button>
   );
 }

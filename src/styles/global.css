@@ -584,3 +584,37 @@ kbd {
 }
 
 .icon-btn.danger-armed { background: var(--priority-high-bg); color: var(--priority-high); border-color: var(--priority-high); animation: pop .3s; }
+
+/* ---------- Xoá 2 bước ---------- */
+.del-btn:hover { background: var(--priority-high-bg); color: var(--priority-high); }
+.del-btn.armed { background: var(--priority-high); color: #fff; animation: pop .3s; }
+.subject-card .del-btn:not(.armed) { opacity: 0; }
+.subject-card:hover .del-btn, .subject-card:focus-within .del-btn { opacity: 1; }
+@media (hover: none) { .subject-card .del-btn { opacity: 1; } }
+.timeline .event { overflow: hidden; }
+.event-del { position: absolute; top: 2px; right: 2px; opacity: 0; transition: opacity .2s; }
+.event-del .pin-btn { width: 26px; height: 26px; background: var(--surface); }
+.timeline .event:hover .event-del, .event-del:focus-within { opacity: 1; }
+@media (hover: none) { .event-del { opacity: .9; } }
+
+/* ---------- Chọn màu môn học ---------- */
+.swatch { width: 36px; height: 36px; border-radius: 50%; border: 3px solid var(--surface); box-shadow: 0 0 0 1.5px var(--border); transition: transform .2s, box-shadow .2s; }
+.swatch:hover { transform: scale(1.08); }
+.swatch.active { box-shadow: 0 0 0 2.5px var(--text); transform: scale(1.08); }
+
+/* ---------- Hướng dẫn người dùng mới ---------- */
+.onboard { display: flex; flex-direction: column; gap: var(--space-4); background: linear-gradient(135deg, var(--indigo-50), var(--surface) 70%); border-color: var(--indigo-100); }
+.onboard-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+@media (max-width: 959px) { .onboard-steps { grid-template-columns: 1fr; } }
+.onboard-step {
+  position: relative; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; text-align: left;
+  padding: var(--space-4); border-radius: var(--radius-card); border: 1px dashed var(--indigo-200); background: var(--surface);
+  color: var(--text); font-weight: 400; transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+.onboard-step b { margin-top: 6px; }
+.onboard-step .num { position: absolute; top: 12px; right: 14px; font-size: 28px; font-weight: 700; color: var(--indigo-100); }
+.onboard-step:hover { transform: translateY(-3px); border-style: solid; border-color: var(--primary); box-shadow: var(--shadow-card); }
+
+/* ---------- Gợi ý tài khoản demo ---------- */
+.demo-hint { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: var(--radius-card); background: var(--indigo-50); color: var(--primary); }
+.demo-hint .t-caption { color: var(--text); }

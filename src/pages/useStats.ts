@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useStore } from '../data/store';
 import { isSameDay, startOfWeek } from '../data/date';
 
@@ -50,4 +50,13 @@ export function useStats() {
       studyHours: Math.round(focus.filter((f) => new Date(f.at) >= last7).reduce((a, f) => a + f.minutes, 0) / 60),
     };
   }, [tasks, focus]);
+}
+
+/** Ghi nhận kỷ lục chuỗi ngày khi chuỗi hiện tại vượt kỷ lục cũ */
+export function useStreakRecord() {
+  const { streak } = useStats();
+  const { bestStreak, setBestStreak, user } = useStore();
+  useEffect(() => {
+    if (user && streak > bestStreak) setBestStreak(streak);
+  }, [user, streak, bestStreak, setBestStreak]);
 }

@@ -1,6 +1,6 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useStore } from '../data/store';
+import { DEMO_EMAIL, useStore } from '../data/store';
 import { Icon } from '../components/Icon';
 import { Button, Field } from '../components/ui';
 
@@ -130,6 +130,15 @@ export function LoginPage() {
       <p className="muted" style={{ textAlign: 'center' }}>
         Chưa có tài khoản? <Link to="/register">Đăng ký ngay</Link>
       </p>
+      <div className="demo-hint">
+        <Icon name="sparkle" size={18} />
+        <span className="grow t-caption">
+          Muốn xem thử với dữ liệu mẫu? Dùng tài khoản demo <b>{DEMO_EMAIL}</b> (mật khẩu bất kỳ).
+        </span>
+        <button type="button" className="btn btn-secondary btn-sm" onClick={() => { setEmail(DEMO_EMAIL); setPw('demo'); setErr({}); }}>
+          Dùng demo
+        </button>
+      </div>
     </AuthLayout>
   );
 }

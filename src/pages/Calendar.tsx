@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useStore } from '../data/store';
 import { SHORT_DAYS, isSameDay, pad, startOfWeek, timeOf, toMinutes, weekdayIndex } from '../data/date';
 import { CATEGORY_COLOR, CATEGORY_LABEL, PRIORITY_COLOR, type Category, type Task } from '../data/types';
-import { PageHead, cssVars } from '../components/ui';
+import { Button, DeleteButton, PageHead, cssVars } from '../components/ui';
+import { AddEventSheet } from './AddEvent';
 import { Icon } from '../components/Icon';
 
 const START = 7; // 07:00
@@ -39,6 +40,7 @@ export function CalendarPage() {
   const [view, setView] = useState<View>(() => (window.innerWidth >= 960 ? 'week' : 'day'));
   const [now, setNow] = useState(new Date());
   const [dir, setDir] = useState<'next' | 'prev' | 'none'>('none');
+  const [adding, setAdding] = useState(false);
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 60000);
@@ -109,6 +111,7 @@ export function CalendarPage() {
           <button className="icon-btn" aria-label="Trước" onClick={() => move(-1)}><Icon name="back" /></button>
           <button className="icon-btn" aria-label="Sau" onClick={() => move(1)}><Icon name="chevron" /></button>
           <button className="btn btn-secondary btn-sm" onClick={goToday}>Hôm nay</button>
+          <Button small icon="plus" onClick={() => setAdding(true)}>Thêm lịch</Button>
         </div>
         <h2 className="t-h3 cal-title">{title}</h2>
         <div className="row">
@@ -122,6 +125,19 @@ export function CalendarPage() {
           </select>
         </div>
       </div>
+
+      <AddEventSheet key={String(adding)} open={adding} onClose={() => setAdding(false)} defaultDay={weekdayIndex(anchor)} />
+
+      {events.length === 0 && (
+        <div className="card row" style={{ marginBottom: 16, background: 'var(--indigo-50)', borderColor: 'var(--indigo-100)' }}>
+          <span className="focus-cta-icon"><Icon name="calendar" size={22} /></span>
+          <div className="grow">
+            <div style={{ fontWeight: 700 }}>Lịch của bạn đang trống</div>
+            <div className="t-caption muted">Thêm lịch học, ca làm thêm… một lần, app tự lặp lại mỗi tuần.</div>
+          </div>
+          <Button small icon="plus" onClick={() => setAdding(true)}>Thêm lịch</Button>
+        </div>
+      )}
 
       {(view === 'day' || view === 'week') && (
         <div className="card" style={{ padding: 8, marginBottom: 16 }}>
@@ -229,7 +245,7 @@ function TimeGrid({
   onTask: (id: string) => void;
   onDay: (d: Date) => void;
 }) {
-  const { events } = useStore();
+  const { events, deleteEvent, showToast } = useStore();
   const nowTop = ((now.getHours() * 60 + now.getMinutes() - START * 60) / 60) * HOUR_PX;
   const cols = `48px repeat(${days.length}, minmax(110px, 1fr))`;
 
@@ -269,6 +285,9 @@ function TimeGrid({
                   const col = CATEGORY_COLOR[e.category];
                   return (
                     <div key={e.id} className="event" style={{ top, height: h - 4, right: 4, ...cssVars({ '--c': col.c, '--cbg': col.bg }) }}>
+                      <span className="event-del">
+                        <DeleteButton small label={e.title} onDelete={() => { deleteEvent(e.id); showToast(`Đã xoá “${e.title}” khỏi lịch`); }} />
+                      </span>
                       <div style={{ fontWeight: 600, fontSize: 13 }}>{e.title}</div>
                       {h > 50 && <div className="t-caption muted">{e.start} – {e.end} · {e.place}</div>}
                     </div>

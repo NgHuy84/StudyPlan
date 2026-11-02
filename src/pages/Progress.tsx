@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../data/store';
 import { SHORT_DAYS, isSameDay, pad, weekdayIndex } from '../data/date';
@@ -10,7 +11,8 @@ import { StreakCard } from '../components/StreakCard';
 /* 06 · Tiến độ  ·  10 · Tiến độ (web) */
 export function ProgressPage() {
   const s = useStats();
-  const { tasks, logout, resetDemo, showToast } = useStore();
+  const { tasks, logout, resetData, showToast, isDemo, bestStreak } = useStore();
+  const [armed, setArmed] = useState(false);
   const nav = useNavigate();
   const first = s.perDay[0].date;
   const last = s.perDay[6].date;
@@ -36,7 +38,7 @@ export function ProgressPage() {
         <StatCard icon="target" tone={{ c: 'var(--priority-low)', bg: 'var(--priority-low-bg)' }} label="Đúng hạn" value={`${s.onTimePct}%`} sub={`${s.onTime}/${s.recentDone} việc`} />
         <StatCard icon="clock" tone={{ c: 'var(--primary)', bg: 'var(--indigo-50)' }} label="Giờ học" value={`${s.studyHours} giờ`} sub="Mục tiêu 15 giờ" />
         <StatCard icon="hourglass" tone={{ c: 'var(--priority-high)', bg: 'var(--priority-high-bg)' }} label="Sắp đến hạn" value={String(s.dueSoon)} sub="Trong 48 giờ tới" />
-        <StreakCard streak={s.streak} />
+        <StreakCard streak={s.streak} record={bestStreak} />
       </div>
 
       <div className="web-grid stack-lg">
@@ -71,7 +73,22 @@ export function ProgressPage() {
       </div>
 
       <div className="row mobile-only">
-        <Button variant="ghost" className="grow" onClick={() => { resetDemo(); showToast('Đã khôi phục dữ liệu mẫu'); }}>Dữ liệu mẫu</Button>
+        <Button
+          variant={armed ? 'danger' : 'ghost'}
+          className="grow"
+          onClick={() => {
+            if (!armed) {
+              setArmed(true);
+              window.setTimeout(() => setArmed(false), 3000);
+              return;
+            }
+            resetData();
+            setArmed(false);
+            showToast(isDemo ? 'Đã khôi phục dữ liệu mẫu' : 'Đã xoá toàn bộ dữ liệu của bạn');
+          }}
+        >
+          {armed ? 'Bấm lần nữa để xác nhận' : isDemo ? 'Khôi phục dữ liệu mẫu' : 'Xoá dữ liệu'}
+        </Button>
         <Button variant="danger" className="grow" icon="logout" onClick={() => { logout(); nav('/login'); }}>Đăng xuất</Button>
       </div>
     </div>

@@ -20,7 +20,7 @@ export function QuickAddSheet() {
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [time, setTime] = useState('20:00');
   const [prio, setPrio] = useState<Priority>('high');
-  const [subjectId, setSubjectId] = useState('ctdl');
+  const [subjectId, setSubjectId] = useState('');
   const [remind, setRemind] = useState<number>(60);
   const [err, setErr] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -28,6 +28,7 @@ export function QuickAddSheet() {
   useEffect(() => {
     if (quickAddOpen) {
       setTitle('');
+      if (!subjects.some((s) => s.id === subjectId)) setSubjectId(subjects[0]?.id ?? '');
       setErr('');
       setTimeout(() => inputRef.current?.focus(), 50);
     }
@@ -60,7 +61,7 @@ export function QuickAddSheet() {
       title: title.trim(),
       category: cat,
       priority: prio,
-      subjectId: cat === 'study' || cat === 'group' ? subjectId : undefined,
+      subjectId: (cat === 'study' || cat === 'group') && subjectId ? subjectId : undefined,
       due: d.toISOString(),
       remindBefore: remind,
     });
@@ -106,6 +107,7 @@ export function QuickAddSheet() {
           <div className="field">
             <label htmlFor="qa-subject">Môn học</label>
             <select id="qa-subject" className="input" value={subjectId} onChange={(e) => setSubjectId(e.target.value)}>
+              <option value="">— Không chọn môn —</option>
               {subjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </div>

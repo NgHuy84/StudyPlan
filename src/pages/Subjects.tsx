@@ -3,13 +3,15 @@ import { useStore } from '../data/store';
 import { PRIORITY_LABEL, PRIORITY_ORDER, type Priority } from '../data/types';
 import { TaskCard } from '../components/TaskCard';
 import { Icon } from '../components/Icon';
-import { Chips, PageHead, PinButton, Progress } from '../components/ui';
+import { Button, Chips, DeleteButton, PageHead, PinButton, Progress } from '../components/ui';
+import { AddSubjectSheet } from './AddSubject';
 
 type Filter = 'all' | 'deadline' | 'pinned';
 
 /* 04 · Không gian môn học  ·  09 · Công việc và môn học (web) */
 export function SubjectsPage() {
-  const { subjects, tasks, togglePinSubject, showToast } = useStore();
+  const { subjects, tasks, togglePinSubject, deleteSubject, showToast } = useStore();
+  const [adding, setAdding] = useState(false);
   const [q, setQ] = useState('');
   const [filter, setFilter] = useState<Filter>('all');
   const [selected, setSelected] = useState<string | null>(null);
@@ -34,7 +36,8 @@ export function SubjectsPage() {
 
   return (
     <div>
-      <PageHead eyebrow="Học kỳ 1 · 2026–2027" title="Môn học" />
+      <PageHead eyebrow="Học kỳ 1 · 2026–2027" title="Môn học" right={<Button icon="plus" small onClick={() => setAdding(true)}>Thêm môn</Button>} />
+      <AddSubjectSheet open={adding} onClose={() => setAdding(false)} />
       <div className="web-grid stack-lg">
         <div className="stack">
           <label className="search">
@@ -64,6 +67,15 @@ export function SubjectsPage() {
                   <div className="t-h3">{s.name}</div>
                   <div className="t-caption muted">{s.teacher} · {s.schedule}</div>
                 </div>
+                <DeleteButton
+                  small
+                  label={s.name}
+                  onDelete={() => {
+                    deleteSubject(s.id);
+                    if (selected === s.id) setSelected(null);
+                    showToast(`Đã xoá môn “${s.name}”`);
+                  }}
+                />
                 <PinButton
                   pinned={s.pinned}
                   name={s.name}
@@ -84,7 +96,15 @@ export function SubjectsPage() {
               </div>
             </div>
           ))}
-          {list.length === 0 && <div className="card empty">Không tìm thấy môn học phù hợp</div>}
+          {subjects.length === 0 && (
+            <div className="card empty stack" style={{ alignItems: 'center' }}>
+              <span className="subject-icon" style={{ color: 'var(--primary)', background: 'var(--indigo-50)' }}><Icon name="book" /></span>
+              <div style={{ fontWeight: 600, color: 'var(--text)' }}>Chưa có môn học nào</div>
+              <div>Thêm các môn của học kỳ này để gom bài tập, deadline và theo dõi tiến độ theo từng môn.</div>
+              <Button icon="plus" onClick={() => setAdding(true)}>Thêm môn học đầu tiên</Button>
+            </div>
+          )}
+          {subjects.length > 0 && list.length === 0 && <div className="card empty">Không tìm thấy môn học phù hợp</div>}
         </div>
 
         <section className="stack">
